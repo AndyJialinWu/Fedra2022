@@ -1,0 +1,101 @@
+download fedra-vx-xx-xx.tgz  from
+http://ntslab01.na.infn.it/fedra/download/
+
+---------------------------------------------------------------------
+Linux: 
+
+in your fedra directory unpack fedra-vx-xx-xx.tgz as 
+[fedra]$ tar zxvf fedra-vx-xx-xx.tgz  
+
+Automatic installation procedure for linux (thanks to Markus)
+
+type in this directory
+"./install.sh" or 
+". ./install.sh" (depending on the shell)
+
+This script do: 
+- setting of variables in config-files
+- compilation of libraries and "recset" on demand.
+- creation of  "setup_new.sh" is included, depending on default SHELL from
+  the user, placed at top directory.
+
+at this point all libraries/binaries should be created and ready for use
+
+type "source ./setup_new.sh" to update PATH and LD_LIBRARY_PATH
+
+After FEDRA installation
+To use fedra libraries in the interactive root session it is necessary to load them. 
+This job usually done by script rootlogon.C coming with fedra distribution. ROOT look first 
+for the rootlogon.C in the current directory then in directories specified by Root.MacroPath in .rootrc file. 
+The fedra rootlogon.C file after installation is located in FEDRA_ROOT/macros directory as well as fedra.rootrc file. 
+If you do not have a .rootrc file in your $HOME folder, just do
+
+  cp $FEDRA_ROOT/macros/fedra.rootrc $HOME/.rootrc
+
+If you already have the file, just add the lines from this example of .rootrc file
+#------------------------------------------------------------
+# Specific for FEDRA root environment settings
+#
+# To be available this file should be $HOME/.rootrc file in
+# user's directory
+#------------------------------------------------------------
+Unix.*.Root.MacroPath:      .:$(FEDRA_ROOT)/macros
+WinNT.*.Root.MacroPath:     .;$(FEDRA_ROOT)/macros
+
+Additional operations required for ROOT6:
+
+The default rootlogon.C script is set for ROOT5. 
+Therefore, to activate the updated version for ROOT6 you need to do the following steps:
+
+ cp $FEDRA_ROOT/src/*/*.pcm $FEDRA_ROOT/lib
+ cp $FEDRA_ROOT/src/*/*/*.pcm $FEDRA_ROOT/lib
+ cp $FEDRA_ROOT/macros/rootlogon_root6x.C $FEDRA_ROOT/macros/rootlogon.C
+ cp $FEDRA_ROOT/macros_root6/*.C $FEDRA_ROOT/macros
+
+---------------------------------------------------------------------
+Windows:
+
+Requirements: 
+  - MS Visual Studio .NET 2003 or more
+  - ROOT 4.04.02 or more
+  - NTFS file system
+
+Installation:
+ 1. in your fedra directory unpack fedra-vx-xx-xx.tgz
+ 2. register the SySalDataIO library (open the command prompt, change to
+    the SySalDataIO.dll folder and type "regsvr32 SysSalDataIO.dll").
+ 3. click on the "install.cmd" icon.
+
+NOTE: After the installation, the environment variables are updated only 
+ for the current user. Any other user must execute the "setup_new.cmd" to 
+ update its environment variables.
+
+---------------------------------------------------------------------
+Windows (for developers):
+
+How to compile FEDRA from the command prompt:
+
+ - Open the command prompt and execute 
+   "%ProgramFiles%\Microsoft Visual Studio .NET 2003\Vc7\bin\vsvars32.bat" 
+   or artenatively open a "Visual Studio .NET 2003 Command Prompt" from
+   the start menu (Visual Studio .NET Tools).
+ - Change to the fedra directory and type install.cmd
+   Type "setup_new.cmd" to update PATH and environment variables.
+   Restart the command prompt to use new environment variables.
+ - change folder which contains the source code you want to compile
+   and type "nmake" or (if Makefile.w32 exists) "nmake /F Makefile.w32" 
+
+How to compile FEDRA from the Visual Studio Development Environment:
+ 
+ Once you have set the environment variables and path (run install.cmd,
+ don't compile libraries and then run setup_new.cmd), FEDRA can be compiled
+ also from the Visual Studio Development Environment.
+
+ The MS Visual Studio solution is $(FEDRA_ROOT)\win32\solution\Fedra.sln
+ Take care to set the $(ROOTSYS)\bin in the "executable" directories 
+ otherwise rootcint cannot be executed:
+	- from the menu toolbar: Tools->Options->Projects->VC++ Directories 
+	- show directories for "Executables files" 
+	- add $(ROOTSYS)\bin 
+
+
